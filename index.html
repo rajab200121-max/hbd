@@ -13,12 +13,6 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        @keyframes floatUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-20px); }
-        }
 
         * { box-sizing: border-box; }
 
@@ -167,7 +161,6 @@
         .waktu-komentar { font-size: 11px; color: rgba(255,255,255,0.55); }
         .teks-komentar { font-size: 13px; color: #f0ecec; margin: 0; line-height: 1.5; }
 
-        /* Kosong */
         .komentar-kosong {
             text-align: center;
             font-size: 13px;
@@ -175,7 +168,24 @@
             padding: 10px 0 4px;
         }
 
-        /* Toast notif */
+        /* ── Tombol Hapus ── */
+        .tombol-hapus {
+            margin-top: 8px;
+            background: rgba(255, 80, 80, 0.25);
+            color: #ffaaaa;
+            border: 1px solid rgba(255, 100, 100, 0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tombol-hapus:hover {
+            background: rgba(255, 80, 80, 0.5);
+            color: white;
+        }
+
+        /* ── Toast notif ── */
         #toast {
             position: fixed;
             bottom: 30px;
@@ -210,25 +220,24 @@
 
         <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" alt="Kenangan 1">
 
-        <p>Happy Birthday pinky aulia gua luthfi rajab mendoakan supaya panjang umur dan sehar selalu ya i hope selalu menjadi versi terbaik dari yourself</p>
+        <p>Happy Birthday pinky aulia gua luthfi rajab mendoakan supaya panjang umur dan sehat selalu ya i hope selalu menjadi versi terbaik dari yourself</p>
 
         <img src="" alt="Kenangan 2">
 
         <p id="countdown"></p>
 
-        <button onclick="kejutan()">Coba klik! </button>
+        <button onclick="kejutan()">Coba klik! 🎁</button>
 
-         <div id="hasilKejutan" style="display:none; animation: fadeIn 0.8s ease;">
-          <p>Ada sesuatu buat lu... nanti foto selfie lu sama kue di kasih lilin 🎁</p>
-         <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" style="width:280px; border-radius:15px; margin:20px auto;">
+        <div id="hasilKejutan" style="display:none; animation: fadeIn 0.8s ease;">
+            <p>Ada sesuatu buat lu... nanti foto selfie lu sama kue di kasih lilin 🎁</p>
+            <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" style="width:280px; border-radius:15px; margin:20px auto;">
         </div>
 
-        <p>Jika ada yang mau di sampaikan silahkan ketik di kolom komentar yang sudah gua buat di bawah yaa biar nanti gua liat. Website ini gua bikin sendiri khusus buat lu .Sekali lagi Happy Birthday! yaa   - Sihanoukville 20 januari 2027</p>
+        <p>Jika ada yang mau di sampaikan silahkan ketik di kolom komentar yang sudah gua buat di bawah yaa biar nanti gua liat. Website ini gua bikin sendiri khusus buat lu. Sekali lagi Happy Birthday! yaa - Sihanoukville 20 januari 2027</p>
 
         <!-- ══════════ KOLOM KOMENTAR ══════════ -->
         <div class="section-komentar">
-            <h3> Tulis Pesan lu</h3>
-
+            <h3>💌 Tulis Pesan lu</h3>
             <textarea
                 id="inputPesan"
                 class="input-komentar"
@@ -236,7 +245,6 @@
                 maxlength="300"
             ></textarea>
             <button class="tombol-kirim" onclick="kirimKomentar()">💬 Kirim Pesan</button>
-
             <div id="daftarKomentar">
                 <p class="komentar-kosong">Belum ada pesan. Jadilah yang pertama! ✨</p>
             </div>
@@ -248,13 +256,12 @@
     <!-- ── Password ── -->
     <script>
         let passwordKunci = prompt("Masukkan password:");
-
         if (passwordKunci === "200103") {
             alert("Password Benar! Selamat melihat");
             document.getElementById("halamanKejutan").style.display = "block";
             document.getElementById("musikRomantis").play().catch(() => {});
         } else {
-            alert("Salah pasword nih Coba refresh dan ketik lagi ya! 😜");
+            alert("Salah password nih, coba refresh dan ketik lagi ya! 😜");
         }
     </script>
 
@@ -295,80 +302,131 @@
             }
         }
         ketik();
+
+        function kejutan() {
+            document.getElementById('hasilKejutan').style.display = 'block';
+            event.target.style.display = 'none';
+        }
     </script>
 
-    <!-- ── Kolom Komentar ── -->
-    <script>
-        const STORAGE_KEY = 'komentar_ulang_tahun';
+    <!-- ── Firebase + Komentar ── -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp }
+            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        function formatWaktu() {
-            const now = new Date();
-            const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
-            const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            return tgl + ' · ' + jam;
-        }
+        // 🔧 GANTI DENGAN CONFIG FIREBASE KAMU
+const firebaseConfig = {
+  apiKey: "AIzaSyBxPKC4GWRFJK5YSJnZIU70nIsTC5o2Qzs",
+  authDomain: "test123-898aa.firebaseapp.com",
+  projectId: "test123-898aa",
+  storageBucket: "test123-898aa.firebasestorage.app",
+  messagingSenderId: "402153614416",
+  appId: "1:402153614416:web:fa306be3c75c035a533555"
+}
 
-        function buatElemenKomentar(k) {
-            const div = document.createElement('div');
-            div.className = 'item-komentar';
-            div.innerHTML =
-                '<div class="komentar-header">' +
-                    '<span class="nama-komentar">' + escapeHtml(k.nama) + '</span>' +
-                    '<span class="waktu-komentar">' + k.waktu + '</span>' +
-                '</div>' +
-                '<p class="teks-komentar">' + escapeHtml(k.pesan) + '</p>';
-            return div;
-        }
+        const app = initializeApp(firebaseConfig);
+        const db  = getFirestore(app);
 
-        function escapeHtml(str) {
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
+        // Simpan ID komentar milik sesi ini
+        const komentarSaya = new Set();
 
-        function muatKomentar() {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        // ── Muat komentar ──
+        async function muatKomentar() {
             const container = document.getElementById('daftarKomentar');
-            container.innerHTML = '';
+            container.innerHTML = '<p class="komentar-kosong">Memuat pesan... ⏳</p>';
 
-            if (saved.length === 0) {
+            const q = query(collection(db, 'komentar'), orderBy('waktu', 'desc'));
+            const snapshot = await getDocs(q);
+
+            if (snapshot.empty) {
                 container.innerHTML = '<p class="komentar-kosong">Belum ada pesan. Jadilah yang pertama! ✨</p>';
                 return;
             }
 
-            saved.forEach(function(k) {
-                container.appendChild(buatElemenKomentar(k));
+            container.innerHTML = '';
+            snapshot.forEach(docSnap => {
+                const k  = docSnap.data();
+                const id = docSnap.id;
+
+                const tgl = k.waktu?.toDate
+                    ? k.waktu.toDate().toLocaleDateString('id-ID', { day:'numeric', month:'long' }) +
+                      ' · ' + k.waktu.toDate().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
+                    : '';
+
+                const tombolHapus = komentarSaya.has(id)
+                    ? `<button class="tombol-hapus" onclick="window.hapusKomentar('${id}')">🗑️ Hapus</button>`
+                    : '';
+
+                const div = document.createElement('div');
+                div.className = 'item-komentar';
+                div.id = 'komentar-' + id;
+                div.innerHTML =
+                    '<div class="komentar-header">' +
+                        '<span class="nama-komentar">Pinky 💕</span>' +
+                        '<span class="waktu-komentar">' + tgl + '</span>' +
+                    '</div>' +
+                    '<p class="teks-komentar">' + escapeHtml(k.pesan) + '</p>' +
+                    tombolHapus;
+
+                container.appendChild(div);
             });
+        }
+
+        // ── Kirim komentar ──
+        window.kirimKomentar = async function() {
+            const pesan = document.getElementById('inputPesan').value.trim();
+            if (!pesan) { alert('Jangan lupa tulis pesannya! 💬'); return; }
+
+            const tombol = document.querySelector('.tombol-kirim');
+            tombol.disabled = true;
+            tombol.textContent = 'Mengirim...';
+
+            const docRef = await addDoc(collection(db, 'komentar'), {
+                pesan: pesan,
+                waktu: serverTimestamp()
+            });
+
+            komentarSaya.add(docRef.id);
+
+            document.getElementById('inputPesan').value = '';
+            tombol.disabled = false;
+            tombol.innerHTML = '💬 Kirim Pesan';
+
+            tampilkanToast();
+            muatKomentar();
+        }
+
+        // ── Hapus komentar ──
+        window.hapusKomentar = async function(id) {
+            const konfirmasi = confirm('Yakin mau hapus pesan ini? 🗑️');
+            if (!konfirmasi) return;
+
+            await deleteDoc(doc(db, 'komentar', id));
+            komentarSaya.delete(id);
+
+            const el = document.getElementById('komentar-' + id);
+            if (el) el.remove();
+
+            const container = document.getElementById('daftarKomentar');
+            if (container.children.length === 0) {
+                container.innerHTML = '<p class="komentar-kosong">Belum ada pesan. Jadilah yang pertama! ✨</p>';
+            }
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         function tampilkanToast() {
             const toast = document.getElementById('toast');
             toast.classList.add('tampil');
-            setTimeout(function() { toast.classList.remove('tampil'); }, 2500);
+            setTimeout(() => toast.classList.remove('tampil'), 2500);
         }
 
-       function kirimKomentar() {
-    const pesan = document.getElementById('inputPesan').value.trim();
-
-    if (!pesan) { alert('Jangan lupa tulis pesannya juga! 💬'); return; }
-
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    saved.unshift({ nama: 'Pinky ', pesan: pesan, waktu: formatWaktu() });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-
-    muatKomentar();
-    tampilkanToast();
-
-    document.getElementById('inputPesan').value = '';
-}
         window.addEventListener('load', muatKomentar);
-        function kejutan() {
-    document.getElementById('hasilKejutan').style.display = 'block';
-    document.querySelector('button').style.display = 'none';
-}
-        
     </script>
 
 </body>
