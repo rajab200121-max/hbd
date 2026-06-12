@@ -349,22 +349,20 @@
             setTimeout(function() { toast.classList.remove('tampil'); }, 2500);
         }
 
-        function kirimKomentar() {
-            const nama  = document.getElementById('inputNama').value.trim();
-            const pesan = document.getElementById('inputPesan').value.trim();
+       function kirimKomentar() {
+    const pesan = document.getElementById('inputPesan').value.trim();
 
-            if (!pesan) { alert('Jangan lupa tulis pesannya juga! 💬'); return; }
+    if (!pesan) { alert('Jangan lupa tulis pesannya juga! 💬'); return; }
 
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            saved.unshift({ nama: nama, pesan: pesan, waktu: formatWaktu() });
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    saved.unshift({ nama: 'Pinky ', pesan: pesan, waktu: formatWaktu() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
 
-            muatKomentar();
-            tampilkanToast();
+    muatKomentar();
+    tampilkanToast();
 
-            document.getElementById('inputNama').value  = '';
-            document.getElementById('inputPesan').value = '';
-        }
+    document.getElementById('inputPesan').value = '';
+}
         window.addEventListener('load', muatKomentar);
         function kejutan() {
     document.getElementById('hasilKejutan').style.display = 'block';
