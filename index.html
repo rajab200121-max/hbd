@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kejutan Spesial Untukmu ❤️</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://i.postimg.cc/gkBqmq54/download-(17).jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #f0ececff;
+            text-align: center;
+            padding: 20px 15px;
+            min-height: 100vh;
+        }
+
+        /* ── Konten Utama ── */
+        .konten-rahasia {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: fadeIn 0.8s ease;
+        }
+
+        img {
+            max-width: 100%;
+            width: 280px;
+            height: auto;
+            object-fit: cover;
+            display: block;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px auto;
+        }
+
+        h1 {
+            font-size: clamp(22px, 6vw, 32px);
+            color: #f0ececff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 15px;
+            color: #f0ececff;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: rgba(255,255,255,0.3);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: white;
+            color: pink;
+        }
+
+        /* ── Particles ── */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* ── Kolom Komentar ── */
+        .section-komentar {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 18px;
+            padding: 22px 20px;
+            text-align: left;
+        }
+
+        .section-komentar h3 {
+            color: #f0ecec;
+            font-size: 17px;
+            margin: 0 0 16px;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .input-komentar {
+            width: 100%;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            transition: border 0.2s;
+        }
+        .input-komentar::placeholder { color: rgba(255,255,255,0.55); }
+        .input-komentar:focus { border-color: rgba(255,255,255,0.75); }
+        textarea.input-komentar { resize: vertical; min-height: 80px; }
+
+        .tombol-kirim {
+            width: 100%;
+            background-color: rgba(255,255,255,0.25);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.7);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 2px;
+        }
+        .tombol-kirim:hover { background-color: white; color: pink; }
+
+        /* ── Item komentar ── */
+        #daftarKomentar { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+
+        .item-komentar {
+            background: rgba(255,255,255,0.14);
+            border-radius: 12px;
+            padding: 11px 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: fadeIn 0.4s ease;
+        }
+        .komentar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .nama-komentar { font-weight: bold; font-size: 13px; color: #ffe4e4; }
+        .waktu-komentar { font-size: 11px; color: rgba(255,255,255,0.55); }
+        .teks-komentar { font-size: 13px; color: #f0ecec; margin: 0; line-height: 1.5; }
+
+        /* Kosong */
+        .komentar-kosong {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            padding: 10px 0 4px;
+        }
+
+        /* Toast notif */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            color: #c2486a;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 999;
+            transition: opacity 0.3s;
+        }
+        #toast.tampil { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+    <div id="toast">Pesan terkirim! 💌</div>
+
+    <div id="halamanKejutan" class="konten-rahasia">
+
+        <audio id="musikRomantis" src="lagu-romantis.mp3" loop></audio>
+
+        <h1 id="judul"></h1>
+
+        <p>Selamat ulang tahun yaaa☺️ Maaf belum bisa hadir di pandangan lo lagi ngga terasa waktu begitu cepet banget</p>
+
+        <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" alt="Kenangan 1">
+
+        <p>Happy Birthday pinky aulia gua luthfi rajab mendoakan supaya panjang umur dan sehar selalu ya i hope selalu menjadi versi terbaik dari yourself</p>
+
+        <img src="" alt="Kenangan 2">
+
+        <p id="countdown"></p>
+
+        <button onclick="kejutan()">Coba klik! </button>
+
+         <div id="hasilKejutan" style="display:none; animation: fadeIn 0.8s ease;">
+          <p>Ada sesuatu buat lu... nanti foto selfie lu sama kue di kasih lilin 🎁</p>
+         <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" style="width:280px; border-radius:15px; margin:20px auto;">
+        </div>
+
+        <p>Jika ada yang mau di sampaikan silahkan ketik di kolom komentar yang sudah gua buat di bawah yaa biar nanti gua liat. Website ini gua bikin sendiri khusus buat lu .Sekali lagi Happy Birthday! yaa   - Sihanoukville 20 januari 2027</p>
+
+        <!-- ══════════ KOLOM KOMENTAR ══════════ -->
+        <div class="section-komentar">
+            <h3> Tulis Pesan lu</h3>
+
+            <textarea
+                id="inputPesan"
+                class="input-komentar"
+                placeholder="Ketik disini yaa pinky kalu ada yang mau di sampaikan ke gua ☺️ ..."
+                maxlength="300"
+            ></textarea>
+            <button class="tombol-kirim" onclick="kirimKomentar()">💬 Kirim Pesan</button>
+
+            <div id="daftarKomentar">
+                <p class="komentar-kosong">Belum ada pesan. Jadilah yang pertama! ✨</p>
+            </div>
+        </div>
+        <!-- ══════════════════════════════════ -->
+
+    </div>
+
+    <!-- ── Password ── -->
+    <script>
+        let passwordKunci = prompt("Masukkan password:");
+
+        if (passwordKunci === "200103") {
+            alert("Password Benar! Selamat melihat");
+            document.getElementById("halamanKejutan").style.display = "block";
+            document.getElementById("musikRomantis").play().catch(() => {});
+        } else {
+            alert("Salah pasword nih Coba refresh dan ketik lagi ya! 😜");
+        }
+    </script>
+
+    <!-- ── Particles background ── -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 50 },
+                color: { value: '#ffffff' },
+                shape: { type: 'heart' },
+                opacity: { value: 0.5 },
+                size: { value: 4 },
+                move: { enable: true, speed: 3 }
+            }
+        });
+    </script>
+
+    <!-- ── Countdown ── -->
+    <script>
+        const tanggalJadian = new Date('2026-01-20');
+        const sekarang = new Date();
+        const selisih = Math.floor((sekarang - tanggalJadian) / (1000 * 60 * 60 * 24));
+        document.getElementById('countdown').innerHTML = '🗓️ Sudah ' + selisih + ' hari !';
+    </script>
+
+    <!-- ── Efek ketik di header ── -->
+    <script>
+        const teks = "Selamat Datang,";
+        let i = 0;
+        function ketik() {
+            if (i < teks.length) {
+                document.getElementById('judul').innerHTML =
+                    teks.substring(0, i + 1) +
+                    '<span style="border-right:2px solid white; animation:blink 0.7s infinite">  </span>';
+                i++;
+                setTimeout(ketik, 150);
+            }
+        }
+        ketik();
+    </script>
+
+    <!-- ── Kolom Komentar ── -->
+    <script>
+        const STORAGE_KEY = 'komentar_ulang_tahun';
+
+        function formatWaktu() {
+            const now = new Date();
+            const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+            const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            return tgl + ' · ' + jam;
+        }
+
+        function buatElemenKomentar(k) {
+            const div = document.createElement('div');
+            div.className = 'item-komentar';
+            div.innerHTML =
+                '<div class="komentar-header">' +
+                    '<span class="nama-komentar">' + escapeHtml(k.nama) + '</span>' +
+                    '<span class="waktu-komentar">' + k.waktu + '</span>' +
+                '</div>' +
+                '<p class="teks-komentar">' + escapeHtml(k.pesan) + '</p>';
+            return div;
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function muatKomentar() {
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('daftarKomentar');
+            container.innerHTML = '';
+
+            if (saved.length === 0) {
+                container.innerHTML = '<p class="komentar-kosong">Belum ada pesan. Jadilah yang pertama! ✨</p>';
+                return;
+            }
+
+            saved.forEach(function(k) {
+                container.appendChild(buatElemenKomentar(k));
+            });
+        }
+
+        function tampilkanToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('tampil');
+            setTimeout(function() { toast.classList.remove('tampil'); }, 2500);
+        }
+
+        function kirimKomentar() {
+            const nama  = document.getElementById('inputNama').value.trim();
+            const pesan = document.getElementById('inputPesan').value.trim();
+
+            if (!pesan) { alert('Jangan lupa tulis pesannya juga! 💬'); return; }
+
+            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            saved.unshift({ nama: nama, pesan: pesan, waktu: formatWaktu() });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+
+            muatKomentar();
+            tampilkanToast();
+
+            document.getElementById('inputNama').value  = '';
+            document.getElementById('inputPesan').value = '';
+        }
+        window.addEventListener('load', muatKomentar);
+        function kejutan() {
+    document.getElementById('hasilKejutan').style.display = 'block';
+    document.querySelector('button').style.display = 'none';
+}
+        
+    </script>
+
+</body>
+</html>
