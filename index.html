@@ -212,7 +212,12 @@
 
     <div id="halamanKejutan" class="konten-rahasia">
 
-        <audio id="musikRomantis" src="https://res.cloudinary.com/dekpcdksq/video/upload/v1781814441/JEONG_SEWOON_-_It_s_you__SkySound.cc_wzjqgk.mp3" loop></audio>
+       <audio id="musikRomantis" src="https://res.cloudinary.com/dekpcdksq/video/upload/v1781814441/JEONG_SEWOON_-_It_s_you__SkySound.cc_wzjqgk.mp3" loop></audio>
+
+<button id="tombolPlay" onclick="document.getElementById('musikRomantis').play(); this.style.display='none';" 
+style="display:none; margin-bottom:15px;">
+    ▶️ Putar Musik
+</button>
 
         <h1 id="judul"></h1>
 
@@ -255,14 +260,22 @@
 
     <!-- ── Password ── -->
     <script>
-        let passwordKunci = prompt("Masukkan password:");
-        if (passwordKunci === "200103") {
-            alert("Password Benar! Selamat melihat");
-            document.getElementById("halamanKejutan").style.display = "block";
-            document.getElementById("musikRomantis").play().catch(() => {});
-        } else {
-            alert("Salah password nih, coba refresh dan ketik lagi ya! 😜");
-        }
+if (passwordKunci === "200103") {
+    alert("Password Benar! Selamat melihat");
+    document.getElementById("halamanKejutan").style.display = "block";
+    
+    // Tunggu user klik OK dulu baru play
+    const musik = document.getElementById("musikRomantis");
+    musik.volume = 1.0;
+    musik.load();
+    musik.play().then(() => {
+        console.log("Musik berhasil diputar!");
+    }).catch((e) => {
+        console.log("Gagal autoplay:", e);
+        // Tampilkan tombol play manual kalau autoplay gagal
+        document.getElementById("tombolPlay").style.display = "block";
+    });
+}
     </script>
 
     <!-- ── Particles background ── -->
