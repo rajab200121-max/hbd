@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ucapan dari luthfi rajab </title>
+    <title>Ucapan dari luthfi rajab</title>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -81,6 +81,21 @@
             background-color: white;
             color: pink;
         }
+
+        /* ── Tombol Play Manual ── */
+        #tombolPlay {
+            display: none;
+            margin-bottom: 15px;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.6);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #tombolPlay:hover { background-color: white; color: pink; }
 
         /* ── Particles ── */
         #particles-js {
@@ -208,20 +223,23 @@
 <body>
 
     <div id="particles-js"></div>
-    <div id="toast">Pesan terkirim! </div>
+    <div id="toast">Pesan terkirim! 💌</div>
 
     <div id="halamanKejutan" class="konten-rahasia">
 
-       <audio id="musikRomantis" src="https://res.cloudinary.com/dekpcdksq/video/upload/v1781814441/JEONG_SEWOON_-_It_s_you__SkySound.cc_wzjqgk.mp3" loop></audio>
+        <!-- ── Audio ── -->
+        <audio id="musikRomantis" 
+               src="https://res.cloudinary.com/dekpcdksq/video/upload/v1781814441/JEONG_SEWOON_-_It_s_you__SkySound.cc_wzjqgk.mp3" 
+               loop preload="auto"></audio>
 
-<button id="tombolPlay" onclick="document.getElementById('musikRomantis').play(); this.style.display='none';" 
-style="display:none; margin-bottom:15px;">
-    ▶️ Putar Musik
-</button>
+        <!-- Tombol play cadangan kalau autoplay diblokir browser -->
+        <button id="tombolPlay" onclick="document.getElementById('musikRomantis').play(); this.style.display='none';">
+            ▶️ Putar Musik
+        </button>
 
         <h1 id="judul"></h1>
 
-        <p>Selamat ulang tahun yaaa☺️ </p>
+        <p>Selamat ulang tahun yaaa☺️</p>
 
         <img src="https://i.postimg.cc/DwXxFWg0/6152027862949629991.jpg" alt="Kenangan 1">
 
@@ -231,7 +249,7 @@ style="display:none; margin-bottom:15px;">
 
         <p id="countdown"></p>
 
-        <button onclick="kejutan()">Coba klik! 🎁</button>
+        <button onclick="kejutan(event)">Coba klik! 🎁</button>
 
         <div id="hasilKejutan" style="display:none; animation: fadeIn 0.8s ease;">
             <p>Ada sesuatu buat lu... nanti foto selfie lu sama kue di kasih lilin 🎁</p>
@@ -242,7 +260,7 @@ style="display:none; margin-bottom:15px;">
 
         <!-- ══════════ KOLOM KOMENTAR ══════════ -->
         <div class="section-komentar">
-            <h3> Tulis Pesan lu</h3>
+            <h3>💌 Tulis Pesan lu</h3>
             <textarea
                 id="inputPesan"
                 class="input-komentar"
@@ -260,22 +278,26 @@ style="display:none; margin-bottom:15px;">
 
     <!-- ── Password ── -->
     <script>
-if (passwordKunci === "200103") {
-    alert("Password Benar! Selamat melihat");
-    document.getElementById("halamanKejutan").style.display = "block";
-    
-    // Tunggu user klik OK dulu baru play
-    const musik = document.getElementById("musikRomantis");
-    musik.volume = 1.0;
-    musik.load();
-    musik.play().then(() => {
-        console.log("Musik berhasil diputar!");
-    }).catch((e) => {
-        console.log("Gagal autoplay:", e);
-        // Tampilkan tombol play manual kalau autoplay gagal
-        document.getElementById("tombolPlay").style.display = "block";
-    });
-}
+        let passwordKunci = prompt("Masukkan password:");
+        if (passwordKunci === "200103") {
+            alert("Password Benar! Selamat melihat");
+            document.getElementById("halamanKejutan").style.display = "block";
+
+            // Coba autoplay musik
+            const musik = document.getElementById("musikRomantis");
+            musik.volume = 1.0;
+            musik.load();
+            musik.play().then(() => {
+                console.log("Musik berhasil diputar!");
+            }).catch((e) => {
+                console.log("Autoplay diblokir browser:", e);
+                // Tampilkan tombol play manual
+                document.getElementById("tombolPlay").style.display = "inline-block";
+            });
+
+        } else {
+            alert("Salah password nih, coba refresh dan ketik lagi ya! 😜");
+        }
     </script>
 
     <!-- ── Particles background ── -->
@@ -316,7 +338,7 @@ if (passwordKunci === "200103") {
         }
         ketik();
 
-        function kejutan() {
+        function kejutan(event) {
             document.getElementById('hasilKejutan').style.display = 'block';
             event.target.style.display = 'none';
         }
@@ -328,15 +350,14 @@ if (passwordKunci === "200103") {
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp }
             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // 🔧 GANTI DENGAN CONFIG FIREBASE KAMU
-const firebaseConfig = {
-  apiKey: "AIzaSyBxPKC4GWRFJK5YSJnZIU70nIsTC5o2Qzs",
-  authDomain: "test123-898aa.firebaseapp.com",
-  projectId: "test123-898aa",
-  storageBucket: "test123-898aa.firebasestorage.app",
-  messagingSenderId: "402153614416",
-  appId: "1:402153614416:web:fa306be3c75c035a533555"
-}
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxPKC4GWRFJK5YSJnZIU70nIsTC5o2Qzs",
+            authDomain: "test123-898aa.firebaseapp.com",
+            projectId: "test123-898aa",
+            storageBucket: "test123-898aa.firebasestorage.app",
+            messagingSenderId: "402153614416",
+            appId: "1:402153614416:web:fa306be3c75c035a533555"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db  = getFirestore(app);
@@ -376,7 +397,7 @@ const firebaseConfig = {
                 div.id = 'komentar-' + id;
                 div.innerHTML =
                     '<div class="komentar-header">' +
-                        '<span class="nama-komentar">Pinky </span>' +
+                        '<span class="nama-komentar">Pinky 💕</span>' +
                         '<span class="waktu-komentar">' + tgl + '</span>' +
                     '</div>' +
                     '<p class="teks-komentar">' + escapeHtml(k.pesan) + '</p>' +
